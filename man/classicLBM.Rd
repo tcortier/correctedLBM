@@ -42,5 +42,5 @@ Z1<-diag(Q[1])\%x\%matrix(1,npc[1],1)
 Z2<-diag(Q[2])\%x\%matrix(1,npc[2],1)
 P<-matrix(runif(Q[1]*Q[2]),Q[1],Q[2]) 
 M<-1*(matrix(runif(n[1]*n[2]),n[1],n[2])<Z1\%*\%P\%*\%t(Z2)) ## adjacency matrix
-classicLBM('bernoulli', P)
+classicLBM('bernoulli', M)
 }

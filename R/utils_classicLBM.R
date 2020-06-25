@@ -1,6 +1,10 @@
 
+#' @importFrom stringr str_extract str_sub
+#' @importFrom parallel mclapply
+#' @importFrom fields rdist
 
 check_boundaries_2 <- function(x, zero = .Machine$double.eps) {
+  
   x[is.nan(x)] <- zero
   x[x <     zero] <-     zero
   x

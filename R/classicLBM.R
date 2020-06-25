@@ -12,7 +12,9 @@
 #' @param MAINparam list
 #' exemple = list(maxExplo=1.5,maxGroups=15,reinitialize=FALSE)
 #'
-#'
+#' @importFrom graphics plot
+#' @importFrom stats as.dist cutree dist hclust kmeans
+#' @importFrom utils combn
 #' @return List of models for different number of groups
 #' @export
 #'
@@ -24,7 +26,7 @@
 #' Z2<-diag(Q[2])%x%matrix(1,npc[2],1)
 #' P<-matrix(runif(Q[1]*Q[2]),Q[1],Q[2]) 
 #' M<-1*(matrix(runif(n[1]*n[2]),n[1],n[2])<Z1%*%P%*%t(Z2)) ## adjacency matrix
-#' classicLBM('bernoulli', P)
+#' classicLBM('bernoulli', M)
 
 
 classicLBM<-function(probability_distribution='bernoulli',adj,initMethod="kmeans_clust",VEMparam=list(maxIter=50,fixPointIter=5,threshold=1e-3,trace=TRUE,cores=1),MAINparam=list(maxExplo=1.5,maxGroups=15,reinitialize=FALSE,cores=1)){
@@ -74,21 +76,21 @@ classicLBM<-function(probability_distribution='bernoulli',adj,initMethod="kmeans
       }
       LBM_plot(models)
     }
-    cond=((k[1]<4|k[1]<round((maxExplo*whmax[1])+0.1)|k[2]<4|k[2]<round((maxExplo*whmax[2])+0.1))&(k[1]<maxGroups)&(k[2]<maxGroups))
-    if ((k[1]<max(4,round((maxExplo*whmax[1])+0.1)))&(k[2]<max(4,round((maxExplo*whmax[2])+0.1)))){
+    cond=((k[1]<4|k[1]<round((MAINparam$maxExplo*whmax[1])+0.1)|k[2]<4|k[2]<round((MAINparam$maxExplo*whmax[2])+0.1))&(k[1]<MAINparam$maxGroups)&(k[2]<MAINparam$maxGroups))
+    if ((k[1]<max(4,round((MAINparam$maxExplo*whmax[1])+0.1)))&(k[2]<max(4,round((MAINparam$maxExplo*whmax[2])+0.1)))){
       gr=which.min(k)
       k[which.min(k)]<-k[which.min(k)]+1
     }
-    else if((k[1]>=max(4,round((maxExplo*whmax[1])+0.1)))&(k[2]<max(4,round((maxExplo*whmax[2])+0.1)))){
+    else if((k[1]>=max(4,round((MAINparam$maxExplo*whmax[1])+0.1)))&(k[2]<max(4,round((MAINparam$maxExplo*whmax[2])+0.1)))){
       k[2]<-k[2]+1
       gr=2
     }
-    else if((k[1]<max(4,round((maxExplo*whmax[1])+0.1)))&(k[2]>=max(4,round((maxExplo*whmax[2])+0.1)))){
+    else if((k[1]<max(4,round((MAINparam$maxExplo*whmax[1])+0.1)))&(k[2]>=max(4,round((MAINparam$maxExplo*whmax[2])+0.1)))){
       k[1]<-k[1]+1
       gr=1
     }
   }
-  if (reinitialize==TRUE){
+  if (MAINparam$reinitialize==TRUE){
     max2=max
     it<-0
     cond<-TRUE
